@@ -9,7 +9,8 @@ body {
 }
 
 .container,
-#display {
+#display,
+#result {
 	border-color: black;
 	border-width: 1px;
 	border-style: solid;
@@ -37,8 +38,18 @@ body {
 	flex-wrap: no-wrap;
 }
 
+#result {
+	flex-grow: 1;
+	background-color: white;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
 #clearButton {
 	flex-grow: 1;
+
 	min-width: 50px;
 	min-height: 50px;
 	max-width: 100px;
