@@ -1,6 +1,7 @@
 const numberA = document.getElementById("numberA");
 const numberB = document.getElementById("numberB");
 const mathsOperator = document.getElementById("mathsOperator");
+const result = document.getElementById("result");
 const clearButton = document.getElementById("clearButton");
 
 const buttonList = Array.from(document.getElementsByTagName("button"));
@@ -22,7 +23,7 @@ operatorButtonList.forEach((button) => {
 		button.addEventListener("click", () => {
 			const a = parseInt(numberA.textContent);
 			const b = parseInt(numberB.textContent);
-			console.log(operate(a, mathsOperator.textContent, b));
+			result.textContent = operate(a, mathsOperator.textContent, b);
 		})
 	}
 });
@@ -51,6 +52,7 @@ numberB.addEventListener("click", () => {
 clearButton.addEventListener("click", () => {
 	numberA.textContent = 0;
 	numberB.textContent = 0;
+	result.textContent = 0;
 });
 
 /* ************************************************************************** */
