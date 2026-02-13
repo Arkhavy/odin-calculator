@@ -9,8 +9,7 @@ body {
 }
 
 .container,
-#display,
-#result {
+#display {
 	border-color: black;
 	border-width: 1px;
 	border-style: solid;
@@ -35,16 +34,6 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: space-evenly;
-	flex-wrap: no-wrap;
-}
-
-#result {
-	flex-grow: 1;
-	background-color: white;
-
-	display: flex;
-	align-items: center;
-	justify-content: center;
 }
 
 #clearButton {
@@ -71,19 +60,5 @@ button {
 	margin: 3px;
 	padding: 0px;
 
-	cursor: pointer;
-}
-
-#numberA,
-#numberB {
-	border-color: rgb(240, 240, 240);
-	border-width: 1px;
-	border-style: solid;
-	padding: 5px 20px 5px 20px;
-	margin: 2px;
-}
-
-#numberA:hover,
-#numberB:hover {
 	cursor: pointer;
 }
