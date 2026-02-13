@@ -1,58 +1,93 @@
-const numberA = document.getElementById("numberA");
-const numberB = document.getElementById("numberB");
-const mathsOperator = document.getElementById("mathsOperator");
-const result = document.getElementById("result");
+let numberA = "";
+let numberB = "";
+let mathsOperator = "";
+
 const clearButton = document.getElementById("clearButton");
+const display = document.getElementById("display");
 
 const buttonList = Array.from(document.getElementsByTagName("button"));
 const numberButtonList = Array.from(document.getElementsByClassName("number"));
 const operatorButtonList = Array.from(document.getElementsByClassName("operator"));
-// console.log(buttonList);
-// console.log(numberButtonList);
-// console.log(operatorButtonList);
+
+function updateDisplay() {
+	if (numberA !== "") {
+		display.textContent = `${numberA}`;
+		if (mathsOperator !== "") {
+			display.textContent += ` ${mathsOperator}`;
+			if (numberB !== "") {
+				display.textContent += ` ${numberB}`;
+			}
+		}
+	} else {
+		display.textContent = "";
+	}
+}
 
 /* ************************************************************************** */
 /*                          operator event listeners                          */
 /* ************************************************************************** */
 operatorButtonList.forEach((button) => {
 	if (button.textContent !== "=") {
+		// if any operator beside equal is clicked
 		button.addEventListener("click", () => {
-			mathsOperator.textContent = button.textContent;
+			if (button.textContent === "+-") {
+				if (mathsOperator === "") {
+					// A negation handling
+					if (numberA === "") {
+						numberA = "-";
+					} else if (numberA === "-") {
+						numberA = "";
+					}
+				} else {
+					// B negation handling
+					if (numberB === "") {
+						numberB = "-";
+					} else if (numberB === "-") {
+						numberB = "";
+					}
+				}
+			} else {
+				if (numberA === "" || numberA === "-") {
+					updateDisplay();
+					return;
+				}
+				if (numberB === "" || numberB === "-") {
+					mathsOperator = button.textContent;
+				} else {
+					const a = parseInt(numberA);
+					const b = parseInt(numberB);
+					numberA = operate(a, mathsOperator, b);
+					mathsOperator = button.textContent;
+					numberB = "";
+				}
+			}
+			updateDisplay();
 		});
 	} else {
+		// if equal is clicked
 		button.addEventListener("click", () => {
-			const a = parseInt(numberA.textContent);
-			const b = parseInt(numberB.textContent);
-			result.textContent = operate(a, mathsOperator.textContent, b);
-		})
+			// if both number exists, do operation, otherwise, do nothing
+			if (numberA !== "" && numberB !== "" && numberA !== "-" && numberB !== "-") {
+				const a = parseInt(numberA);
+				const b = parseInt(numberB);
+				numberA = operate(a, mathsOperator, b);
+				mathsOperator = "";
+				numberB = "";
+				updateDisplay();
+			}
+		});
 	}
 });
 
 /* ************************************************************************** */
 /*                           display event listeners                          */
 /* ************************************************************************** */
-numberA.selected = false;
-numberB.selected = false;
-
-numberA.addEventListener("click", () => {
-	numberB.selected = false;
-	numberB.style.borderColor = "rgb(240, 240, 240)";
-
-	numberA.selected = true;
-	numberA.style.borderColor = "rgb(125, 125, 125)";
-});
-numberB.addEventListener("click", () => {
-	numberA.selected = false;
-	numberA.style.borderColor = "rgb(240, 240, 240)";
-
-	numberB.selected = true;
-	numberB.style.borderColor = `rgb(125, 125, 125)`;
-});
-
 clearButton.addEventListener("click", () => {
-	numberA.textContent = 0;
-	numberB.textContent = 0;
-	result.textContent = 0;
+	numberA = "";
+	numberB = "";
+	mathsOperator = "";
+	result = "";
+	updateDisplay();
 });
 
 /* ************************************************************************** */
@@ -60,20 +95,20 @@ clearButton.addEventListener("click", () => {
 /* ************************************************************************** */
 numberButtonList.forEach((button) => {
 	button.addEventListener("click", () => {
-		if (numberA.selected) {
-			if (numberA.textContent === "0") {
-				numberA.textContent = button.textContent;
+		if (mathsOperator === "") {
+			if (numberA === "0") {
+				numberA = button.textContent;
 			} else {
-				numberA.textContent += button.textContent;
+				numberA += button.textContent;
+			}
+		} else {
+			if (numberB === "0") {
+				numberB = button.textContent;
+			} else {
+				numberB += button.textContent;
 			}
 		}
-		if (numberB.selected) {
-			if (numberB.textContent === "0") {
-				numberB.textContent = button.textContent;
-			} else {
-				numberB.textContent += button.textContent;
-			}
-		}
+		updateDisplay();
 	});
 });
 
