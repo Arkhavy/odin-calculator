@@ -1,6 +1,7 @@
 let numberA = "";
 let numberB = "";
 let mathsOperator = "";
+let resultState = false;
 
 const clearButton = document.getElementById("clearButton");
 const display = document.getElementById("display");
@@ -30,6 +31,9 @@ operatorButtonList.forEach((button) => {
 	if (button.textContent !== "=") {
 		// if any operator beside equal is clicked
 		button.addEventListener("click", () => {
+			if (resultState) {
+				resultState = false;
+			}
 			if (button.textContent === "+-") {
 				if (mathsOperator === "") {
 					// A negation handling
@@ -71,6 +75,7 @@ operatorButtonList.forEach((button) => {
 				const a = parseInt(numberA);
 				const b = parseInt(numberB);
 				numberA = operate(a, mathsOperator, b);
+				resultState = true;
 				mathsOperator = "";
 				numberB = "";
 				updateDisplay();
@@ -86,7 +91,7 @@ clearButton.addEventListener("click", () => {
 	numberA = "";
 	numberB = "";
 	mathsOperator = "";
-	result = "";
+	resultState = false;
 	updateDisplay();
 });
 
@@ -95,6 +100,10 @@ clearButton.addEventListener("click", () => {
 /* ************************************************************************** */
 numberButtonList.forEach((button) => {
 	button.addEventListener("click", () => {
+		if (resultState) {
+			clearButton.dispatchEvent(new Event("click"));
+			resultState = false;
+		}
 		if (mathsOperator === "") {
 			if (numberA === "0") {
 				numberA = button.textContent;
