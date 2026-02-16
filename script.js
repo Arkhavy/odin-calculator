@@ -4,6 +4,7 @@ let mathsOperator = "";
 let resultState = false;
 
 const clearButton = document.getElementById("clearButton");
+const backButton = document.getElementById("backButton");
 const display = document.getElementById("display");
 
 const buttonList = Array.from(document.getElementsByTagName("button"));
@@ -33,8 +34,8 @@ function updateDisplay() {
 function equalButtonAction() {
 	// if both number exists, do operation, otherwise, do nothing
 	if (numberA !== "" && numberB !== "" && numberA !== "-" && numberB !== "-") {
-		const a = parseInt(numberA);
-		const b = parseInt(numberB);
+		const a = parseFloat(numberA);
+		const b = parseFloat(numberB);
 		numberA = operate(a, mathsOperator, b);
 		if (numberA !== Math.round(numberA)) {
 			numberA = numberA.toFixed(4);
@@ -143,6 +144,17 @@ clearButton.addEventListener("click", () => {
 	updateDisplay();
 });
 
+backButton.addEventListener("click", () => {
+	if (numberB !== "") {
+		numberB = numberB.slice(0, numberB.length - 1);
+	} else if (numberB === "" && mathsOperator !== "") {
+		mathsOperator = "";
+	} else {
+		numberA = numberA.slice(0, numberA.length - 1);
+	}
+	updateDisplay();
+});
+
 /* ************************************************************************** */
 /*                           number event listeners                           */
 /* ************************************************************************** */
@@ -169,6 +181,8 @@ document.addEventListener("keydown", (e) => {
 		changeSignButtonAction();
 	} else if (e.key === "c") {
 		clearButton.dispatchEvent(new Event("click"));
+	} else if (e.key === "Backspace") {
+		backButton.dispatchEvent(new Event("click"));
 	}
 	updateDisplay();
 })
