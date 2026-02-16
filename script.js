@@ -5,6 +5,7 @@ let resultState = false;
 
 const clearButton = document.getElementById("clearButton");
 const backButton = document.getElementById("backButton");
+const dotButton = document.getElementById("dotButton");
 const display = document.getElementById("display");
 
 const buttonList = Array.from(document.getElementsByTagName("button"));
@@ -204,7 +205,6 @@ dotButton.addEventListener("click", () => {
 /*                           Keyboard event listener                          */
 /* ************************************************************************** */
 document.addEventListener("keydown", (e) => {
-	console.log(e.key);
 	// number handling
 	if (["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].includes(e.key)) {
 		numberButtonAction(e.key);
@@ -254,10 +254,6 @@ function divide(a, b) {
 /* ************************************************************************** */
 /*                              OPERATE function                              */
 /* ************************************************************************** */
-/**
- * Function meant to call ADD, SUBSTRACT, MULTIPLY and DIVIDE function according
- * to the operator given by the user
-*/
 function operate(a, operator, b) {
 	switch(operator){
 		case "+": return (add(a, b));
