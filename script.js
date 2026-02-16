@@ -171,6 +171,10 @@ clearButton.addEventListener("click", () => {
 });
 
 backButton.addEventListener("click", () => {
+	if (resultState) {
+		clearButton.dispatchEvent(new Event("click"));
+		return;
+	}
 	if (numberB !== "") {
 		numberB = numberB.slice(0, numberB.length - 1);
 	} else if (numberB === "" && mathsOperator !== "") {
