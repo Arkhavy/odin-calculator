@@ -61,6 +61,9 @@ operatorButtonList.forEach((button) => {
 					const a = parseInt(numberA);
 					const b = parseInt(numberB);
 					numberA = operate(a, mathsOperator, b);
+					if (numberA !== Math.round(numberA)) {
+						numberA = numberA.toFixed(4);
+					}
 					mathsOperator = button.textContent;
 					numberB = "";
 				}
@@ -75,6 +78,9 @@ operatorButtonList.forEach((button) => {
 				const a = parseInt(numberA);
 				const b = parseInt(numberB);
 				numberA = operate(a, mathsOperator, b);
+				if (numberA !== Math.round(numberA)) {
+					numberA = numberA.toFixed(4);
+				}
 				resultState = true;
 				mathsOperator = "";
 				numberB = "";
