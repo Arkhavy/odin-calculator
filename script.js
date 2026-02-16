@@ -37,8 +37,8 @@ function equalButtonAction() {
 		const a = parseFloat(numberA);
 		const b = parseFloat(numberB);
 		numberA = operate(a, mathsOperator, b);
-		if (numberA !== Math.round(numberA)) {
-			numberA = numberA.toFixed(4);
+		if (numberA !== parseFloat(numberA).toFixed(4)) {
+			numberA = +parseFloat(numberA).toFixed(4);
 		}
 		resultState = true;
 		mathsOperator = "";
@@ -59,8 +59,8 @@ function operatorButtonAction(operator) {
 		const a = parseInt(numberA);
 		const b = parseInt(numberB);
 		numberA = operate(a, mathsOperator, b);
-		if (numberA !== Math.round(numberA)) {
-			numberA = numberA.toFixed(4);
+		if (numberA !== parseFloat(numberA).toFixed(4)) {
+			numberA = +parseFloat(numberA).toFixed(4);
 		}
 		mathsOperator = operator;
 		numberB = "";
@@ -107,6 +107,32 @@ function numberButtonAction(number) {
 		} else {
 			numberB += number;
 		}
+	}
+}
+
+function dotHandling(number) {
+	if (number === "" || number === "0") {
+		number = "0.";
+	} else if (number.charAt(number.length - 1) === ".") {
+		return (number.slice(0, number.length - 1));
+	} else if (number.split("").includes(".")) {
+		return (number);
+	} else {
+		number += ".";
+	}
+	return (number);
+}
+
+function dotButtonAction() {
+	if (resultState) {
+		clearButton.dispatchEvent(new Event("click"));
+	}
+	if (mathsOperator === "" && numberB === "") {
+		// A dot handling
+		numberA = dotHandling(numberA);
+	} else {
+		//B dot handling
+		numberB = dotHandling(numberB);
 	}
 }
 
@@ -165,6 +191,11 @@ numberButtonList.forEach((button) => {
 	});
 });
 
+dotButton.addEventListener("click", () => {
+	dotButtonAction();
+	updateDisplay();
+});
+
 /* ************************************************************************** */
 /*                           Keyboard event listener                          */
 /* ************************************************************************** */
@@ -183,6 +214,8 @@ document.addEventListener("keydown", (e) => {
 		clearButton.dispatchEvent(new Event("click"));
 	} else if (e.key === "Backspace") {
 		backButton.dispatchEvent(new Event("click"));
+	} else if (e.key === ".") {
+		dotButtonAction();
 	}
 	updateDisplay();
 })
