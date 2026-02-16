@@ -10,6 +10,9 @@ const buttonList = Array.from(document.getElementsByTagName("button"));
 const numberButtonList = Array.from(document.getElementsByClassName("number"));
 const operatorButtonList = Array.from(document.getElementsByClassName("operator"));
 
+/* ************************************************************************** */
+/*                              Display handling                              */
+/* ************************************************************************** */
 function updateDisplay() {
 	if (numberA !== "") {
 		display.textContent = `${numberA}`;
@@ -25,67 +28,106 @@ function updateDisplay() {
 }
 
 /* ************************************************************************** */
+/*                              Operator handling                             */
+/* ************************************************************************** */
+function equalButtonAction() {
+	// if both number exists, do operation, otherwise, do nothing
+	if (numberA !== "" && numberB !== "" && numberA !== "-" && numberB !== "-") {
+		const a = parseInt(numberA);
+		const b = parseInt(numberB);
+		numberA = operate(a, mathsOperator, b);
+		if (numberA !== Math.round(numberA)) {
+			numberA = numberA.toFixed(4);
+		}
+		resultState = true;
+		mathsOperator = "";
+		numberB = "";
+	}
+}
+
+function operatorButtonAction(operator) {
+	if (resultState) {
+		resultState = false;
+	}
+	if (numberA === "" || numberA === "-") {
+		return;
+	}
+	if (numberB === "" || numberB === "-") {
+		mathsOperator = operator;
+	} else {
+		const a = parseInt(numberA);
+		const b = parseInt(numberB);
+		numberA = operate(a, mathsOperator, b);
+		if (numberA !== Math.round(numberA)) {
+			numberA = numberA.toFixed(4);
+		}
+		mathsOperator = operator;
+		numberB = "";
+	}
+}
+
+/* ************************************************************************** */
+/*                               Number handling                              */
+/* ************************************************************************** */
+function changeSignButtonAction() {
+	if (resultState) {
+		clearButton.dispatchEvent(new Event("click"));
+	}
+	if (mathsOperator === "") {
+		// A negation handling
+		if (numberA === "") {
+			numberA = "-";
+		} else if (numberA === "-") {
+			numberA = "";
+		}
+	} else {
+		// B negation handling
+		if (numberB === "") {
+			numberB = "-";
+		} else if (numberB === "-") {
+			numberB = "";
+		}
+	}
+}
+
+function numberButtonAction(number) {
+	if (resultState) {
+			clearButton.dispatchEvent(new Event("click"));
+	}
+	if (mathsOperator === "") {
+		if (numberA === "0") {
+			numberA = number;
+		} else {
+			numberA += number;
+		}
+	} else {
+		if (numberB === "0") {
+			numberB = number;
+		} else {
+			numberB += number;
+		}
+	}
+}
+
+/* ************************************************************************** */
 /*                          operator event listeners                          */
 /* ************************************************************************** */
 operatorButtonList.forEach((button) => {
 	if (button.textContent !== "=") {
 		// if any operator beside equal is clicked
 		button.addEventListener("click", () => {
-			if (resultState) {
-				resultState = false;
-			}
 			if (button.textContent === "+-") {
-				if (mathsOperator === "") {
-					// A negation handling
-					if (numberA === "") {
-						numberA = "-";
-					} else if (numberA === "-") {
-						numberA = "";
-					}
-				} else {
-					// B negation handling
-					if (numberB === "") {
-						numberB = "-";
-					} else if (numberB === "-") {
-						numberB = "";
-					}
-				}
+				changeSignButtonAction();
 			} else {
-				if (numberA === "" || numberA === "-") {
-					updateDisplay();
-					return;
-				}
-				if (numberB === "" || numberB === "-") {
-					mathsOperator = button.textContent;
-				} else {
-					const a = parseInt(numberA);
-					const b = parseInt(numberB);
-					numberA = operate(a, mathsOperator, b);
-					if (numberA !== Math.round(numberA)) {
-						numberA = numberA.toFixed(4);
-					}
-					mathsOperator = button.textContent;
-					numberB = "";
-				}
+				operatorButtonAction(button.textContent);
 			}
 			updateDisplay();
 		});
 	} else {
 		// if equal is clicked
 		button.addEventListener("click", () => {
-			// if both number exists, do operation, otherwise, do nothing
-			if (numberA !== "" && numberB !== "" && numberA !== "-" && numberB !== "-") {
-				const a = parseInt(numberA);
-				const b = parseInt(numberB);
-				numberA = operate(a, mathsOperator, b);
-				if (numberA !== Math.round(numberA)) {
-					numberA = numberA.toFixed(4);
-				}
-				resultState = true;
-				mathsOperator = "";
-				numberB = "";
-				updateDisplay();
-			}
+			equalButtonAction();
+			updateDisplay();
 		});
 	}
 });
@@ -106,26 +148,30 @@ clearButton.addEventListener("click", () => {
 /* ************************************************************************** */
 numberButtonList.forEach((button) => {
 	button.addEventListener("click", () => {
-		if (resultState) {
-			clearButton.dispatchEvent(new Event("click"));
-			resultState = false;
-		}
-		if (mathsOperator === "") {
-			if (numberA === "0") {
-				numberA = button.textContent;
-			} else {
-				numberA += button.textContent;
-			}
-		} else {
-			if (numberB === "0") {
-				numberB = button.textContent;
-			} else {
-				numberB += button.textContent;
-			}
-		}
+		numberButtonAction(button.textContent);
 		updateDisplay();
 	});
 });
+
+/* ************************************************************************** */
+/*                           Keyboard event listener                          */
+/* ************************************************************************** */
+document.addEventListener("keydown", (e) => {
+	console.log(e.key);
+	// number handling
+	if (["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].includes(e.key)) {
+		numberButtonAction(e.key);
+	} else if (e.key === "=" || e.key === "Enter") {
+		equalButtonAction();
+	} else if (["+", "-", "*", "/"].includes(e.key)) {
+		operatorButtonAction(e.key);
+	} else if (e.key === "_") {
+		changeSignButtonAction();
+	} else if (e.key === "c") {
+		clearButton.dispatchEvent(new Event("click"));
+	}
+	updateDisplay();
+})
 
 /* ************************************************************************** */
 /*                                ADD function                                */
